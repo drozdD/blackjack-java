@@ -12,6 +12,7 @@ public class ControlPanel extends JPanel{
     private JPanel buttonPanel;
     private JPanel buttonPanel2;
     private JPanel moneyPanel;
+    private JPanel endPanel;
     private Game game;
     private Runnable updateUI;
 
@@ -25,6 +26,48 @@ public class ControlPanel extends JPanel{
         generatePlayButtonsPanel();
 
         updateUIForState();
+    }
+
+    public void generateEndPanel(){
+        JLabel endText = null;
+        if(game.getPlayer().getState() == "win") endText = new JLabel("You won!");
+        else if(game.getPlayer().getState() == "lose") endText = new JLabel("Haha - you lost!");
+        else if(game.getPlayer().getState() == "push") endText = new JLabel("It's a push!");
+        else endText = new JLabel("Something went wrong!");
+        endText.setForeground(Color.WHITE);
+        endText.setFont(new Font("Monospaced", Font.BOLD, 35));
+        endText.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel balance = new JLabel("Current balance: " + game.getPlayer().getMoney());
+        balance.setForeground(Color.WHITE);
+        balance.setFont(new Font("Monospaced", Font.BOLD, 25));
+        balance.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel left = new JPanel(new GridLayout(2, 1));
+        left.setOpaque(false);
+        left.add(endText);
+        left.add(balance);
+
+        ImageIcon playAgain = new ImageIcon(getClass().getResource("/buttons/play_again.png"));
+        Image iconPlayAgain = playAgain.getImage().getScaledInstance(222, 60, Image.SCALE_SMOOTH);
+        JButton playAgainButton = new JButton(new ImageIcon(iconPlayAgain));
+
+        playAgainButton.setBorderPainted(false);    // bez obramowania
+        playAgainButton.setContentAreaFilled(false); // bez tła
+        playAgainButton.setFocusPainted(false);
+
+        playAgainButton.addActionListener(e -> {
+            System.out.println("KLIK");
+        });
+
+        JPanel right = new JPanel();
+        right.setOpaque(false);
+        right.add(playAgainButton);
+
+        endPanel = new JPanel(new GridLayout(1, 2));
+        endPanel.setOpaque(false);
+        endPanel.add(left);
+        endPanel.add(right);
     }
 
     public void generatePlayButtonsPanel(){
@@ -52,6 +95,22 @@ public class ControlPanel extends JPanel{
         doubleButton.setBorderPainted(false);    // bez obramowania
         doubleButton.setContentAreaFilled(false); // bez tła
         doubleButton.setFocusPainted(false);
+
+        hitButton.addActionListener(e -> {
+            game.hitBtnEvent();
+            updateUIForState();
+            updateUI.run();
+        });
+
+        doubleButton.addActionListener(e->{
+            game.doubleBtnEvent();
+            updateUIForState();
+            updateUI.run();
+        });
+
+        standButton.addActionListener(e->{
+
+        });
 
         buttonPanel2.add(hitButton);
         buttonPanel2.add(standButton);
@@ -183,6 +242,7 @@ public class ControlPanel extends JPanel{
         });
 
         betButton.addActionListener(e -> {
+            if(game.getPlayer().getCurrentStake() <= 0) return;
             game.startRound();
             updateUIForState();
             updateUI.run();
@@ -248,8 +308,9 @@ public class ControlPanel extends JPanel{
                 this.add(buttonPanel2, BorderLayout.EAST);
                 break;
 
-            case "finished":
-
+            case "win", "lose", "push":
+                generateEndPanel();
+                this.add(endPanel, BorderLayout.CENTER);
                 break;
         }
 

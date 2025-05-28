@@ -40,8 +40,16 @@ public class Player {
         return money;
     }
 
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
     public int getCurrentStake() {
         return currentStake;
+    }
+
+    public void setCurrentStake(int currentStake) {
+        this.currentStake = currentStake;
     }
 
     public void setState(String state) {

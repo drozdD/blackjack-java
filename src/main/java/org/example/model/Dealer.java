@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Dealer {
     private List<Card> dealerCards;
+    private int points;
 
     public Dealer(){
         this.dealerCards = new ArrayList<>();

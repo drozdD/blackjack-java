@@ -46,13 +46,18 @@ public class GameWindow extends JFrame {
                 generateControlPanel();
                 break;
 
-            case "playing":
+            case "playing", "win":
                 generateControlPanel();
                 generateCardPanel();
                 break;
 
-            case "finished":
+            case "push":
 
+                break;
+
+            case "lose":
+                generateControlPanel();
+                generateCardPanel();
                 break;
         }
 

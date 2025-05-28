@@ -20,7 +20,7 @@ public class Card {
             else this.points = 10;
         }
         Image img = new ImageIcon(getClass().getResource("/cards/" + suit + rank + ".png")).getImage();
-        this.image = img.getScaledInstance(196, 266, Image.SCALE_DEFAULT);
+        this.image = img.getScaledInstance(168, 228, Image.SCALE_DEFAULT);
     }
 
     public Image getImage() {
