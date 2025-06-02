@@ -113,7 +113,6 @@ public class Game {
     }
 
     public void push(){
-        System.out.println("JEST PUSH");
         player.setMoney(player.getMoney() + player.getCurrentStake());
         player.saveMoneyToFile(player.getMoney());
         player.setCurrentStake(0);
