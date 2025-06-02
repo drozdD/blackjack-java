@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Dealer {
     private List<Card> dealerCards;
-    private int points;
 
     public Dealer(){
         this.dealerCards = new ArrayList<>();
@@ -17,5 +16,9 @@ public class Dealer {
 
     public List<Card> getDealerCards() {
         return dealerCards;
+    }
+
+    public void resetCards(){
+        dealerCards = new ArrayList<>();
     }
 }

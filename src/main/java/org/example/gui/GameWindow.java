@@ -1,17 +1,14 @@
 package org.example.gui;
 
 import org.example.model.Game;
-import org.example.model.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class GameWindow extends JFrame {
 
-    private Game game;
+    private final Game game;
+    public CardPanel cardPanel;
 
     public GameWindow(Game game) {
         this.game = game;
@@ -27,6 +24,7 @@ public class GameWindow extends JFrame {
 
     public void generateControlPanel(){
         BackgroundPanel contentPanel = new BackgroundPanel("/bg.png");
+        contentPanel.setOpaque(false);
         contentPanel.setLayout(new BorderLayout());
         setContentPane(contentPanel);
 
@@ -35,9 +33,11 @@ public class GameWindow extends JFrame {
     }
 
     public void generateCardPanel(){
-        CardPanel cardPanel = new CardPanel(game.getPlayer().getPlayerCards(), game.getDealer().getDealerCards());
+        cardPanel = new CardPanel(game.getPlayer().getPlayerCards(), game.getDealer().getDealerCards(), game.getPlayer());
         cardPanel.setOpaque(false);
         add(cardPanel, BorderLayout.CENTER);
+        cardPanel.revalidate();
+        cardPanel.repaint();
     }
 
     public void updateUI(){
@@ -46,16 +46,7 @@ public class GameWindow extends JFrame {
                 generateControlPanel();
                 break;
 
-            case "playing", "win":
-                generateControlPanel();
-                generateCardPanel();
-                break;
-
-            case "push":
-
-                break;
-
-            case "lose":
+            case "playing", "win", "push", "lose":
                 generateControlPanel();
                 generateCardPanel();
                 break;

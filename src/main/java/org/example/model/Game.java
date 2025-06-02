@@ -14,6 +14,7 @@ public class Game {
     }
 
     public void startRound(){
+        player.saveMoneyToFile(player.getMoney());
         player.setState("playing");
         deck.shuffle();
         player.addCard(deck.drawCard());
@@ -24,6 +25,8 @@ public class Game {
         if(checkBlackjack(player.getPlayerCards()) && checkBlackjack(dealer.getDealerCards())) push();
         else if (checkBlackjack(player.getPlayerCards())) playerWin();
         else if (checkBlackjack(dealer.getDealerCards())) playerLose();
+
+        player.setPoints(countPoints(player.getPlayerCards()));
     }
 
     public boolean checkBlackjack(List<Card> cards){
@@ -35,10 +38,18 @@ public class Game {
         return sum == 21;
     }
 
+    public void resetGame(){
+        player.resetCards();
+        player.setPoints(0);
+        dealer.resetCards();
+        deck = new Deck();
+    }
+
     public void hitBtnEvent(){
         deck.shuffle();
         player.addCard(deck.drawCard());
-        if(countPoints(player.getPlayerCards()) > 21) playerLose();
+        player.setPoints(countPoints(player.getPlayerCards()));
+        if(player.getPoints() > 21) playerLose();
     }
 
     public void doubleBtnEvent(){
@@ -47,9 +58,29 @@ public class Game {
         hitBtnEvent();
     }
 
-    public void standBtnEvent(){
+    public void standBtnEvent(Runnable updateFun) {
+        player.setState("dealerTurn");
+        deck.shuffle();
+        int playerPoints = countPoints(player.getPlayerCards());
+        player.setPoints(playerPoints);
+        int[] dealerPoints = {countPoints(dealer.getDealerCards())};
+
+        while (dealerPoints[0] < 17) {
+            Card newCard = deck.drawCard();
+            dealer.addCard(newCard);
+            dealerPoints[0] = countPoints(dealer.getDealerCards());
+            updateFun.run(); // odśwież panel z kartami
+        }
+
+        if (dealerPoints[0] > 21) playerWin();
+        else if (dealerPoints[0] > playerPoints) playerLose();
+        else if (playerPoints > dealerPoints[0]) playerWin();
+        else push();
+
+        updateFun.run(); // finalne odświeżenie
 
     }
+
 
     public int countPoints(List<Card> cards){
         int sum = 0;
@@ -69,17 +100,23 @@ public class Game {
     }
 
     public void playerWin(){
-        player.setMoney(player.getMoney() + player.getCurrentStake());
+        player.setMoney(player.getMoney() + player.getCurrentStake() * 2);
+        player.saveMoneyToFile(player.getMoney());
         player.setCurrentStake(0);
         player.setState("win");
     }
 
     public void playerLose(){
         player.setCurrentStake(0);
+        player.saveMoneyToFile(player.getMoney());
         player.setState("lose");
     }
 
     public void push(){
+        System.out.println("JEST PUSH");
+        player.setMoney(player.getMoney() + player.getCurrentStake());
+        player.saveMoneyToFile(player.getMoney());
+        player.setCurrentStake(0);
         player.setState("push");
     }
 

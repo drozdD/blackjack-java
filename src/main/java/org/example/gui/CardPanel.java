@@ -1,21 +1,25 @@
 package org.example.gui;
 
 import org.example.model.Card;
+import org.example.model.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 public class CardPanel extends JPanel {
     private List<Card> playerCards;
     private List<Card> dealerCards;
+    private Player player;
     private final Image backCard;
     private static final int CARD_WIDTH = 168;
     private static final int CARD_HEIGHT = 228;
 
-    public CardPanel(List<Card> playerCards, List<Card> dealerCards) {
+    public CardPanel(List<Card> playerCards, List<Card> dealerCards, Player player) {
         this.playerCards = playerCards;
         this.dealerCards = dealerCards;
+        this.player = player;
         setPreferredSize(new Dimension(1000, 800));
 
         Image img = new ImageIcon(getClass().getResource("/cards/back.png")).getImage();
@@ -32,7 +36,7 @@ public class CardPanel extends JPanel {
         // Rysuj karty dealera u góry
         for (int i = 0; i < dealerCards.size(); i++) {
             Image img = null;
-            if(i == dealerCards.size() - 1) img = backCard;
+            if(i == dealerCards.size() - 1 && Objects.equals(player.getState(), "playing")) img = backCard;
             else img = dealerCards.get(i).getImage();
             int x = startXDealer + i * (CARD_WIDTH/2) - 20;
             g.drawImage(img, x, 20, null);  // (x, y) + odstęp
@@ -47,12 +51,11 @@ public class CardPanel extends JPanel {
             int x = startXPlayer + i * (CARD_WIDTH/2) - 20;
             g.drawImage(img, x, 420, null); // niżej y = 250
         }
-        repaint();
-    }
 
-    public void updateCards(List<Card> playerCards, List<Card> dealerCards) {
-        this.playerCards = playerCards;
-        this.dealerCards = dealerCards;
+        g.setFont(new Font("Monospaced", Font.BOLD, 18));
+        g.setColor(Color.WHITE);
+        g.drawString("Player points: " + String.valueOf(player.getPoints()), panelWidth / 2 - 70, 400);
+
         repaint();
     }
 }

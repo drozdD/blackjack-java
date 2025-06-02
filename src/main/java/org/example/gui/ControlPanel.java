@@ -1,7 +1,6 @@
 package org.example.gui;
 
 import org.example.model.Game;
-import org.example.model.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +56,10 @@ public class ControlPanel extends JPanel{
         playAgainButton.setFocusPainted(false);
 
         playAgainButton.addActionListener(e -> {
-            System.out.println("KLIK");
+            game.resetGame();
+            game.getPlayer().setState("betting");
+            updateUIForState();
+            updateUI.run();
         });
 
         JPanel right = new JPanel();
@@ -103,13 +105,14 @@ public class ControlPanel extends JPanel{
         });
 
         doubleButton.addActionListener(e->{
+            if(game.getPlayer().getMoney() < game.getPlayer().getCurrentStake()) return;
             game.doubleBtnEvent();
             updateUIForState();
             updateUI.run();
         });
 
         standButton.addActionListener(e->{
-
+            game.standBtnEvent(updateUI);
         });
 
         buttonPanel2.add(hitButton);
