@@ -245,7 +245,7 @@ public class ControlPanel extends JPanel{
         });
 
         betButton.addActionListener(e -> {
-            if(game.getPlayer().getCurrentStake() <= 0) return;
+            if(game.getPlayer().getCurrentStake() < 0) return;
             game.startRound();
             updateUIForState();
             updateUI.run();
